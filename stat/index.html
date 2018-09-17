@@ -1,59 +1,41 @@
 <html>
-	<head>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
 
-	</head>
-	<body>
-		<h1>Todo List</h1>
-		<input type="text" id="newtasktext">
-		<button type="button" onclick="addTask()">Add Task</button>
-		<button type="button" onclick="loadTasks()">List Tasks</button>
-		<div id="demo"></div>
-	</body>
-	<script>
-		
-		function removeTask(task_id) {
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					loadTasks();
-				}
-			};
-			xhttp.open("GET", "../removeTask/" + task_id, true);
-			xhttp.send();
-		}
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        <p>Bobby Dilley</p>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html" class="active">INBOX</a></li>
+          <li><a href="work.html">WORK</a></li>
+          <li><a href="food.html">FOOD</a></li>
+        </ul>
+      </nav>
+    </header>
 
-		function addTask() {
-			var description = document.getElementById('newtasktext').value;
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					loadTasks();
-				}
-			};
-			xhttp.open("POST", "../newTask", true);
-			xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhttp.send("description=" + description);
-		}
+    <section class="todo">
+      <input type="text" class="todo_input" placeholder="I need to..."/>
+    </section>
 
-		var tasks = {};
-		function loadTasks() {
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if(this.readyState == 4 && this.status == 200) {
-					tasks = JSON.parse(this.responseText);
-					populateList();
-				}
-			};
-			xhttp.open("GET", "../tasks", true);
-			xhttp.send();
-		}
+    <section class="list">
+      <h2>Today</h2>
+      <div class="item" style="border-left:2px solid #F23400">
+        Example
+      </div>
+    </section>
 
-		function populateList() {
-			var innerList = "";
-			for(var id in tasks) {
-				innerList += `<li>${tasks[id].description} - <a href="#" onclick="removeTask(${tasks[id].id})">Remove</a></li>`;
-			}
-			document.getElementById("demo").innerHTML = "<ul>" + innerList + "</ul>";
-		}
-	</script>
+    <section class="list">
+      <h1>Todo List</h1>
+      <input type="text" id="newtasktext">
+      <button type="button" onclick="addTask()">Add Task</button>
+      <button type="button" onclick="loadTasks()">List Tasks</button>
+      <div id="demo"></div>
+    </section>
+  </body>
+  <script type="text/javascript" src="todo.js"></script>
 </html>

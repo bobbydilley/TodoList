@@ -1,0 +1,108 @@
+body {
+  margin:0;
+  font-family: 'Open Sans', sans-serif;
+  background-color:#F9FAFB;
+}
+
+header {
+  width:800px;
+  padding-left:calc(50% - 400px);
+  padding-right:calc(50% - 400px);
+  background-color:#232935;
+  color:#fff;
+}
+
+section {
+  width:800px;
+  padding-left:calc(50% - 400px);
+  padding-right:calc(50% - 400px);
+}
+
+header ul {
+  list-style:none;
+  margin:0;
+  padding:0;
+  padding-top:10px;
+}
+
+header ul a {
+  color:#4B525A;
+  text-decoration:none;
+  font-size:13px;
+  letter-spacing:1px;
+  font-weight:200;
+  padding:8px;
+  display:inline-block;
+  border-bottom:2px solid #232935;
+}
+
+.active {
+  color:#FFF;
+  border-bottom:2px solid #F800A7;
+}
+
+header li {
+  display:inline-block;
+  margin-right:20px;
+}
+
+.title {
+  padding-top:20px;
+}
+
+.todo_input {
+  font-family: 'Open Sans', sans-serif;
+  color:#aeaeae;
+  background-color:inherit;
+  border:none;
+  font-size:24px;
+  font-weight:200;
+  outline:0;
+  margin:0;
+  padding:0;
+  width:100%;
+}
+
+::placeholder {
+  color:#dedede;
+}
+
+.todo {
+  padding-top:30px;
+  padding-bottom:30px;
+  border-bottom:1px solid #efefef;
+}
+
+.list {
+  padding-top:10px;
+}
+
+.item {
+  margin:0;
+  background-color:#fff;
+  padding:20px;
+  border-radius:2px;
+  -webkit-box-shadow:0px 1px 1px #ccc;
+ -moz-box-shadow:0px 1px 1px #ccc;
+ box-shadow:0px 1px 1px #ccc;
+ color:#010101;
+ font-size:14px;
+ margin-bottom:10px;
+ font-weight:200;
+}
+
+h2 {
+  color:#aeaeae;
+  font-weight:200;
+  font-size:18px;
+  margin-top:40px;
+  margin-bottom:20px;
+}
+
+@media only screen and (max-width: 600px) {
+    header, section {
+        width:90%;
+        padding-left:5%;
+        padding-right:5%;
+    }
+}
