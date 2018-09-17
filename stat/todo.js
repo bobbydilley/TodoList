@@ -1,3 +1,6 @@
+var tags = {};
+var tasks = {};
+
 function removeTask(task_id) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -23,7 +26,6 @@ function addTask() {
   document.getElementById('newtasktext').value = "";
 }
 
-var tasks = {};
 function loadTasks() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -36,12 +38,33 @@ function loadTasks() {
   xhttp.send();
 }
 
+
+function loadTags() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if(this.readyState == 4 && this.status == 200) {
+      tags = JSON.parse(this.responseText);
+      populateTags();
+    }
+  };
+  xhttp.open("GET", "../tags", true);
+  xhttp.send();
+}
+
 function populateList() {
   var innerList = "";
   for(var id in tasks) {
     innerList += `<div class="item"><div class="desc">${tasks[id].description}</div><div class="actions"><a href="#" onclick="removeTask(${tasks[id].id})">COMPLETE</a></div></div>`;
   }
   document.getElementById("today").innerHTML = "<h2>Today</h2>\n" + innerList;
+}
+
+function populateTags() {
+	var innerList = `<li><a href="#" class="active">INBOX</a></li>`;
+	for(var id in tags) {
+		innerList += `<li><a href="#">${tags[id].toUpperCase()}</a></li>`
+	}
+	document.getElementById("tags").innerHTML = innerList;
 }
 
 var input = document.getElementById("newtasktext");
@@ -54,4 +77,5 @@ input.addEventListener("keyup", function(event) {
 
 window.onload = function() {
 	loadTasks();
+	loadTags();
 }
