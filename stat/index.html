@@ -19,23 +19,14 @@
     </header>
 
     <section class="todo">
-      <input type="text" class="todo_input" placeholder="I need to..."/>
+      <input type="text" id="newtasktext" class="todo_input" placeholder="I need to..."/>
     </section>
 
-    <section class="list">
+    <section class="list" id="today">
       <h2>Today</h2>
-      <div class="item" style="border-left:2px solid #F23400">
-        Example
-      </div>
+      <div class="item">Example</div>
     </section>
 
-    <section class="list">
-      <h1>Todo List</h1>
-      <input type="text" id="newtasktext">
-      <button type="button" onclick="addTask()">Add Task</button>
-      <button type="button" onclick="loadTasks()">List Tasks</button>
-      <div id="demo"></div>
-    </section>
   </body>
   <script type="text/javascript" src="todo.js"></script>
 </html>

@@ -20,6 +20,7 @@ function addTask() {
   xhttp.open("POST", "../newTask", true);
   xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhttp.send("description=" + description);
+  document.getElementById('newtasktext').value = "";
 }
 
 var tasks = {};
@@ -38,7 +39,19 @@ function loadTasks() {
 function populateList() {
   var innerList = "";
   for(var id in tasks) {
-    innerList += `<li>${tasks[id].description} - <a href="#" onclick="removeTask(${tasks[id].id})">Remove</a></li>`;
+    innerList += `<div class="item" onclick="removeTask(${tasks[id].id})">${tasks[id].description}</div>`;
   }
-  document.getElementById("demo").innerHTML = "<ul>" + innerList + "</ul>";
+  document.getElementById("today").innerHTML = "<h2>Today</h2>\n" + innerList;
+}
+
+var input = document.getElementById("newtasktext");
+input.addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+       addTask();
+    }
+});
+
+window.onload = function() {
+	loadTasks();
 }
