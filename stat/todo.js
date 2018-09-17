@@ -72,10 +72,21 @@ input.addEventListener("keyup", function(event) {
     event.preventDefault();
     if (event.keyCode === 13) {
        addTask();
+       copy();
     }
 });
 
 window.onload = function() {
 	loadTasks();
 	loadTags();
+}
+
+function copy() {
+  document.getElementById("textunder").innerHTML = document.getElementById("newtasktext").value
+  .replace(/#\w+/gi, function (x) {
+    return "<span class=\"red\">" + x + "</span>";
+  })
+  .replace(/@\w+/gi, function (x) {
+    return "<span class=\"blue\">" + x + "</span>";
+  });
 }

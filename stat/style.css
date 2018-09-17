@@ -36,6 +36,32 @@ header ul a {
   border-bottom:2px solid #232935;
 }
 
+#newtasktext, #textunder {
+  font-family: sans-serif;
+  font-weight:200;
+  padding:0;
+  margin:0;
+  outline:0;
+  font-size:24px;
+  background-color:transparent;
+  position:absolute;
+  border:0;
+  top:0;
+  left:0;
+  width:100%;
+  padding:10px;
+  font-family: 'Open Sans', sans-serif;
+  color:#aeaeae;
+  background-color:inherit;
+  border:none;
+  font-size:24px;
+  font-weight:200;
+  outline:0;
+  margin:0;
+  padding:0;
+  width:100%;
+}
+
 .active {
   color:#FFF;
   border-bottom:2px solid #F800A7;
@@ -50,21 +76,10 @@ header li {
   padding-top:20px;
 }
 
-.todo_input {
-  font-family: 'Open Sans', sans-serif;
-  color:#aeaeae;
-  background-color:inherit;
-  border:none;
-  font-size:24px;
-  font-weight:200;
-  outline:0;
-  margin:0;
-  padding:0;
-  width:100%;
-}
-
 ::placeholder {
   color:#dedede;
+  font-weight:200;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .todo {
@@ -129,4 +144,27 @@ h2 {
 .actions a:hover {
   color:#fff;
   background-color:#3498db;
+}
+
+.container {
+  position:relative;
+  display:block;
+  height:35px;
+}
+
+#newtasktext {
+  z-index:10;
+}
+
+#textunder {
+  color:transparent;
+  white-space:pre;
+}
+
+.red {
+  border-bottom:2px solid #F800A7;
+}
+
+.blue {
+  border-bottom:2px solid #3498db;
 }

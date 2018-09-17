@@ -19,7 +19,10 @@
     </header>
 
     <section class="todo">
-      <input type="text" id="newtasktext" class="todo_input" placeholder="I need to..."/>
+      <div class="container">
+        <input type="text" id="newtasktext" class="todo_input" onchange="copy()" onkeydown="copy()" onkeyup="copy()" placeholder="I need to..."/>
+        <p id="textunder"></p>
+      </div>
     </section>
 
     <section class="list" id="today">
