@@ -39,7 +39,7 @@ function loadTasks() {
 function populateList() {
   var innerList = "";
   for(var id in tasks) {
-    innerList += `<div class="item" onclick="removeTask(${tasks[id].id})">${tasks[id].description}</div>`;
+    innerList += `<div class="item"><div class="desc">${tasks[id].description}</div><div class="actions"><a href="#" onclick="removeTask(${tasks[id].id})">COMPLETE</a></div></div>`;
   }
   document.getElementById("today").innerHTML = "<h2>Today</h2>\n" + innerList;
 }

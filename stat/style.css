@@ -106,3 +106,27 @@ h2 {
         padding-right:5%;
     }
 }
+
+.desc {
+  text-align:left;
+  display:inline-block;
+}
+
+.actions {
+  text-align:right;
+  display:inline-block;
+  float:right;
+}
+
+.actions a {
+  text-decoration:none;
+  font-weight:400;
+  color:#3498db;
+  padding:5px;
+  border-radius:2px;
+}
+
+.actions a:hover {
+  color:#fff;
+  background-color:#3498db;
+}
