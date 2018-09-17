@@ -23,10 +23,20 @@ def remove_task(task_id):
     database.remove_task(task_id)
     return jsonify({'status' : 'removed'})
 
+@app.route('/tags')
+def get_tags():
+    database = Database('todo.db')
+    return jsonify(database.get_tags())
+
 @app.route('/tasks')
 def get_tasks():
     database = Database('todo.db')
     return jsonify(database.get_tasks())
+
+@app.route('/tasks/<tag>')
+def get_tasks_tag(tag):
+    database = Database('todo.db')
+    return jsonify(database.get_tasks_tag(tag))
 
 if __name__ == '__main__':
     app.run(debug=True)

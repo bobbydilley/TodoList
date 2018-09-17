@@ -8,6 +8,7 @@ function removeTask(task_id) {
   xhttp.onreadystatechange = function() {
     if(this.readyState == 4 && this.status == 200) {
       loadTasks();
+      loadTags();
     }
   };
   xhttp.open("GET", "../removeTask/" + task_id, true);
@@ -67,6 +68,8 @@ function populateList() {
 }
 
 function populateTags() {
+	current_tag = 0;
+	last_tag = current_tag;
 	var innerList = `<li><a href="#" onclick="swapTag(0)" id="tag_0" class="active">INBOX</a></li>`;
 	for(var id in tags) {
 		innerList += `<li><a href="#" id="tag_${tags[id]}" onclick="swapTag('${tags[id]}')">${tags[id].toUpperCase()}</a></li>`
