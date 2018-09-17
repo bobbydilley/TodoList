@@ -1,5 +1,7 @@
 var tags = {};
 var tasks = {};
+var current_tag = 0;
+var last_tag = current_tag;
 
 function removeTask(task_id) {
   var xhttp = new XMLHttpRequest();
@@ -18,6 +20,7 @@ function addTask() {
   xhttp.onreadystatechange = function() {
     if(this.readyState == 4 && this.status == 200) {
       loadTasks();
+      loadTags();
     }
   };
   xhttp.open("POST", "../newTask", true);
@@ -34,7 +37,11 @@ function loadTasks() {
       populateList();
     }
   };
-  xhttp.open("GET", "../tasks", true);
+  if(current_tag == 0) {
+  	xhttp.open("GET", "../tasks", true);
+  } else {
+	xhttp.open("GET", "../tasks/" + current_tag, true);
+  }
   xhttp.send();
 }
 
@@ -60,11 +67,36 @@ function populateList() {
 }
 
 function populateTags() {
-	var innerList = `<li><a href="#" class="active">INBOX</a></li>`;
+	var innerList = `<li><a href="#" onclick="swapTag(0)" id="tag_0" class="active">INBOX</a></li>`;
 	for(var id in tags) {
-		innerList += `<li><a href="#">${tags[id].toUpperCase()}</a></li>`
+		innerList += `<li><a href="#" id="tag_${tags[id]}" onclick="swapTag('${tags[id]}')">${tags[id].toUpperCase()}</a></li>`
 	}
 	document.getElementById("tags").innerHTML = innerList;
+}
+
+function swapTag(name) {
+	last_tag = current_tag;
+	document.getElementById("tag_" + name).classList.add('active');
+	document.getElementById("tag_" + last_tag).classList.remove('active');
+	current_tag = name;
+	loadTasks();
+}
+
+function setHeadText() {
+	var result = "Bobby Dilley";
+	var d = new Date();
+	var h = d.getHours();
+	var tod = "";
+	if (h < 12) {
+	  tod = 'Morning'
+	} else if (h < 18) {
+	  tod = 'Afternoon'
+	} else {
+	  tod = 'Evening'
+	}
+	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	result = days[d.getDay()] + " " + tod;
+	document.getElementById('head_text').innerHTML = result;
 }
 
 var input = document.getElementById("newtasktext");
@@ -77,6 +109,7 @@ input.addEventListener("keyup", function(event) {
 });
 
 window.onload = function() {
+	setHeadText();
 	loadTasks();
 	loadTags();
 }
