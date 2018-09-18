@@ -2,6 +2,7 @@ body {
   margin:0;
   font-family: 'Open Sans', sans-serif;
   background-color:#F9FAFB;
+  margin-bottom:40px;
 }
 
 header {
@@ -12,10 +13,23 @@ header {
   color:#fff;
 }
 
-section {
+a {
+  cursor:pointer;
+}
+
+section, footer {
   width:800px;
   padding-left:calc(50% - 400px);
   padding-right:calc(50% - 400px);
+}
+
+footer {
+  text-align:center;
+  color:#ccc;
+  font-size:12px;
+  padding-top:20px;
+  padding-bottom:10px;
+  font-weight:200;
 }
 
 header ul {
@@ -163,7 +177,7 @@ h1 {
 .snooze:hover {
 	color:#fff;
 	background-color:#c0c0c0;
-	
+
 }
 
 

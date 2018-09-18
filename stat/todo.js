@@ -93,7 +93,7 @@ function populateList() {
   var tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate()+1);
   for(var id in tasks) {
- 
+
 
     if(late_label == 0 && tasks[id].time_due != null && new Date(tasks[id].time_due) < today && new Date(tasks[id].time_due).toDateString() != today.toDateString()) {
 	innerList += `<h2 class="late">Late</h2>\n`;
@@ -117,13 +117,13 @@ function populateList() {
     innerList += `<div class="actions">`;
     if(tasks[id].time_due != null) {
 	    if(new Date(tasks[id].time_due) > tomorrow) {
-		innerList += `<a href="#" class="snooze" onclick="snoozeTask(${tasks[id].id})">${new Date(tasks[id].time_due).getDate()} ${months[new Date(tasks[id].time_due).getMonth()]}</a>`;
+		innerList += `<a class="snooze" onclick="snoozeTask(${tasks[id].id})">${new Date(tasks[id].time_due).getDate()} ${months[new Date(tasks[id].time_due).getMonth()]}</a>`;
 	    } else {
-	       innerList += `<a href="#" class="snooze" onclick="snoozeTask(${tasks[id].id})">SNOOZE</a>`;
+	       innerList += `<a  class="snooze" onclick="snoozeTask(${tasks[id].id})">SNOOZE</a>`;
             }
-	    innerList += `<a href="#" class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
+	    innerList += `<a class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
     } else {
-        innerList += `<a href="#" class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
+        innerList += `<a class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
     }
     innerList += `</div></div>`;
   }
@@ -138,9 +138,9 @@ function populateList() {
 }
 
 function populateTags() {
-	var innerList = `<li><a href="#" onclick="loadTag(0)" id="tag_0">ALL</a></li>`;
+	var innerList = `<li><a onclick="loadTag(0)" id="tag_0">ALL</a></li>`;
 	for(var id in tags) {
-		innerList += `<li><a href="#" id="tag_${tags[id]}" onclick="loadTag('${tags[id]}')">${tags[id].toUpperCase()}</a></li>`
+		innerList += `<li><a id="tag_${tags[id]}" onclick="loadTag('${tags[id]}')">${tags[id].toUpperCase()}</a></li>`
 	}
 	document.getElementById("tags").innerHTML = innerList;
 	if(document.getElementById("tag_" + current_tag) == null) {
