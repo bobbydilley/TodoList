@@ -150,14 +150,43 @@ h1 {
 .actions a {
   text-decoration:none;
   font-weight:400;
-  color:#3498db;
   padding:5px;
   border-radius:2px;
+  margin-left:10px;
 }
 
-.actions a:hover {
+.complete:hover {
   color:#fff;
   background-color:#3498db;
+}
+
+.snooze:hover {
+	color:#fff;
+	background-color:#c0c0c0;
+	
+}
+
+
+.item_info {
+	clear:both;
+	outline:0;
+	border:0;
+	margin-top:20px;
+	padding-top:20px;
+	padding-bottom:20px;
+	border-top:1px solid #ccc;
+}
+
+.by {
+	color:#ccc;
+}
+
+.snooze {
+	color:#c0c0c0;
+}
+
+.complete {
+	color:#3498db;
 }
 
 .container {

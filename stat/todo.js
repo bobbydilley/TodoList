@@ -2,6 +2,12 @@ var tags = {};
 var tasks = {};
 var current_tag = 0;
 var last_tag = current_tag;
+var months = [
+    "JANUARY", "FEBRUARY", "MARCH",
+    "APRIL", "MAT", "JUNE", "JULY",
+    "AUGUST", "SEPTEMBER", "OCTOBER",
+    "NOVEMBER", "DECEMBER"
+  ];
 
 function removeTask(task_id) {
   var xhttp = new XMLHttpRequest();
@@ -12,6 +18,18 @@ function removeTask(task_id) {
     }
   };
   xhttp.open("GET", "../removeTask/" + task_id, true);
+  xhttp.send();
+}
+
+
+function snoozeTask(task_id) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if(this.readyState == 4 && this.status == 200) {
+      loadTasks();
+    }
+  };
+  xhttp.open("GET", "../snoozeTask/" + task_id, true);
   xhttp.send();
 }
 
@@ -35,9 +53,6 @@ function loadTasks() {
   xhttp.onreadystatechange = function() {
     if(this.readyState == 4 && this.status == 200) {
       tasks = JSON.parse(this.responseText);
-      if(!tasks) {
-      	alert('notags');
-      }
       populateList();
     }
   };
@@ -92,7 +107,20 @@ function populateList() {
 	rest_week_label = 1;
     }
 
-    innerList += `<div class="item"><div class="desc">${tasks[id].description}</div><div class="actions"><a href="#" onclick="removeTask(${tasks[id].id})">COMPLETE</a></div></div>`;
+    innerList += `<div class="item">`;
+    innerList += `<div class="desc">${tasks[id].description}</div>`;
+    innerList += `<div class="actions">`;
+    if(tasks[id].time_due != null) {
+	    if(new Date(tasks[id].time_due) > tomorrow) {
+		innerList += `<a href="#" class="snooze" onclick="snoozeTask(${tasks[id].id})">${new Date(tasks[id].time_due).getDate()} ${months[new Date(tasks[id].time_due).getMonth()]}</a>`;
+	    } else {
+	       innerList += `<a href="#" class="snooze" onclick="snoozeTask(${tasks[id].id})">SNOOZE</a>`;
+            }
+	    innerList += `<a href="#" class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
+    } else {
+        innerList += `<a href="#" class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
+    }
+    innerList += `</div></div>`;
   }
   if(innerList == "") {
 	  innerList = `<div class="center_message">All Done, no more todos for today!</div>`;
@@ -101,13 +129,15 @@ function populateList() {
 }
 
 function populateTags() {
-	current_tag = 0;
-	last_tag = current_tag;
 	var innerList = `<li><a href="#" onclick="swapTag(0)" id="tag_0">ALL</a></li>`;
 	for(var id in tags) {
 		innerList += `<li><a href="#" id="tag_${tags[id]}" onclick="swapTag('${tags[id]}')">${tags[id].toUpperCase()}</a></li>`
 	}
 	document.getElementById("tags").innerHTML = innerList;
+	if(document.getElementById("tag_" + current_tag) == null) {
+		current_tag = 0;
+		last_tag = current_tag;
+	}
 	swapTag(current_tag);
 }
 
