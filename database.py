@@ -12,20 +12,31 @@ class Database():
         cursor.execute('PRAGMA foreign_keys=ON')
         self.db.commit()
 
+    def next_weekday(self, d, weekday):
+        days_ahead = weekday - d.weekday()
+        if days_ahead <= 0: # Target day already happened this week
+            days_ahead += 7
+        return d + datetime.timedelta(days_ahead)
+
     def new_task(self, description):
         tags = {d.strip("#") for d in description.split() if d.startswith("#")}
         times = {d.strip("@") for d in description.split() if d.startswith("@")}
         due = None
         for time in times:
-            print "time:", time
-            if time == "today":
-                print time
-                due = datetime.date.today()
-                print due
-            if time == "tomorrow":
-                print time
-                due = datetime.date.today() + datetime.timedelta(days=1)
-                print due
+            if time == "today" : due = datetime.date.today()
+            if time == "tomorrow" : due = datetime.date.today() + datetime.timedelta(days=1)
+            if time == "monday" : due = self.next_weekday(datetime.date.today(), 0) 
+            if time == "tuesday" : due = self.next_weekday(datetime.date.today(), 1) 
+            if time == "wednesday" : due = self.next_weekday(datetime.date.today(), 2) 
+            if time == "thursday" : due = self.next_weekday(datetime.date.today(), 3) 
+            if time == "friday" : due = self.next_weekday(datetime.date.today(), 4) 
+            if time == "saturday" : due = self.next_weekday(datetime.date.today(), 5) 
+            if time == "sunday" : due = self.next_weekday(datetime.date.today(), 6) 
+        for time in times:
+            description = description.replace('@' + time, '')
+        for tag in tags:
+            description = description.replace('#' + tag, '')
+        description = description.capitalize()
         cursor = self.db.cursor()
         cursor.execute('''
             INSERT INTO Tasks (Description, DueTimeStamp) VALUES (?, ?)
@@ -49,6 +60,13 @@ class Database():
         ''', (task_id,))
         self.db.commit()
 
+    def snooze_task(self, task_id):
+        cursor = self.db.cursor()
+        cursor.execute('''
+            UPDATE Tasks SET DueTimeStamp = date(DueTimeStamp, "+1 Day") WHERE TaskID = ?
+        ''', (task_id,))
+        self.db.commit()
+    
     def get_tags(self):
         cursor = self.db.cursor()
         cursor.execute('''

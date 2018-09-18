@@ -35,6 +35,12 @@ def get_tasks_tag(tag):
     database = Database('todo.db')
     return jsonify(database.get_tasks_tag(tag))
 
+@app.route('/snoozeTask/<task_id>')
+def snooze_task(task_id):
+    database = Database('todo.db')
+    database.snooze_task(task_id)
+    return jsonify({'status' : 'snoozed'})
+
 @app.route('/<path:path>')
 def stat(path):
     return send_from_directory('stat', path)

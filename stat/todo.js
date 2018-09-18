@@ -14,7 +14,9 @@ function removeTask(task_id) {
   xhttp.onreadystatechange = function() {
     if(this.readyState == 4 && this.status == 200) {
       loadTasks();
-      loadTags();
+      if(current_tag == 0) {
+        loadTags();
+      }
     }
   };
   xhttp.open("GET", "../removeTask/" + task_id, true);
@@ -35,6 +37,9 @@ function snoozeTask(task_id) {
 
 function addTask() {
   var description = document.getElementById('newtasktext').value;
+  if(current_tag != 0) {
+    description += " #" + current_tag;
+  }
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if(this.readyState == 4 && this.status == 200) {
@@ -123,15 +128,19 @@ function populateList() {
     innerList += `</div></div>`;
   }
   if(innerList == "") {
-	  innerList = `<div class="center_message">All Done, no more todos for today!</div>`;
+	  if(current_tag == 0) {
+	  	innerList = `<div class="center_message">No more tasks - create one by typing!</div>`;
+          } else {
+		innerList = `<div class="center_message">Thats all your ${current_tag.toLowerCase()} tasks done!</div>`;
+          }
   }
   document.getElementById("today").innerHTML = innerList;
 }
 
 function populateTags() {
-	var innerList = `<li><a href="#" onclick="swapTag(0)" id="tag_0">ALL</a></li>`;
+	var innerList = `<li><a href="#" onclick="loadTag(0)" id="tag_0">ALL</a></li>`;
 	for(var id in tags) {
-		innerList += `<li><a href="#" id="tag_${tags[id]}" onclick="swapTag('${tags[id]}')">${tags[id].toUpperCase()}</a></li>`
+		innerList += `<li><a href="#" id="tag_${tags[id]}" onclick="loadTag('${tags[id]}')">${tags[id].toUpperCase()}</a></li>`
 	}
 	document.getElementById("tags").innerHTML = innerList;
 	if(document.getElementById("tag_" + current_tag) == null) {
@@ -141,7 +150,10 @@ function populateTags() {
 	swapTag(current_tag);
 }
 
-
+function loadTag(name) {
+	loadTags();
+	swapTag(name);
+}
 
 function swapTag(name) {
 	if(name == current_tag) {
