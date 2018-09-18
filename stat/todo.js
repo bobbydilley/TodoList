@@ -75,24 +75,19 @@ function populateList() {
   for(var id in tasks) {
  
 
-    if(late_label == 0 && tasks[id].time_due != null && new Date(tasks[id].time_due).toDateString() < today.toDateString()) {
+    if(late_label == 0 && tasks[id].time_due != null && new Date(tasks[id].time_due) < today && new Date(tasks[id].time_due).toDateString() != today.toDateString()) {
 	innerList += `<h2 class="late">Late</h2>\n`;
 	late_label = 1;
     }
-
-
-    if(today_label == 0 && new Date(tasks[id].time_due).toDateString() == today.toDateString()) {
+    else if(today_label == 0 && new Date(tasks[id].time_due).toDateString() == today.toDateString()) {
 	innerList += "<h2>Today</h2>\n";
 	today_label = 1;
     }
-    
-    if(tomorrow_label == 0 && new Date(tasks[id].time_due).toDateString() == tomorrow.toDateString()) {
+    else if(tomorrow_label == 0 && new Date(tasks[id].time_due).toDateString() == tomorrow.toDateString()) {
 	innerList += "<h2>Tomorrow</h2>\n";
 	tomorrow_label = 1;
     }
-
-
-    if(rest_week_label == 0 && tasks[id].time_due == null) {
+    else if(rest_week_label == 0 && (tasks[id].time_due == null || new Date(tasks[id].time_due) > tomorrow)) {
 	innerList += "<h2>Future Tasks</h2>\n";
 	rest_week_label = 1;
     }
