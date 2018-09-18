@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return send_from_directory('stat', 'index.html')
+    return send_from_directory('static', 'index.html')
 
 
 @app.route('/newTask', methods = ['POST'])
@@ -43,7 +43,7 @@ def snooze_task(task_id):
 
 @app.route('/<path:path>')
 def stat(path):
-    return send_from_directory('stat', path)
+    return send_from_directory('static', path)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
