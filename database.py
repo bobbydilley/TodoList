@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 
 class Database():
     def __init__(self, file_path):
@@ -13,10 +14,22 @@ class Database():
 
     def new_task(self, description):
         tags = {d.strip("#") for d in description.split() if d.startswith("#")}
+        times = {d.strip("@") for d in description.split() if d.startswith("@")}
+        due = None
+        for time in times:
+            print "time:", time
+            if time == "today":
+                print time
+                due = datetime.date.today()
+                print due
+            if time == "tomorrow":
+                print time
+                due = datetime.date.today() + datetime.timedelta(days=1)
+                print due
         cursor = self.db.cursor()
         cursor.execute('''
-            INSERT INTO Tasks (Description) VALUES (?)
-        ''', (description,))
+            INSERT INTO Tasks (Description, DueTimeStamp) VALUES (?, ?)
+        ''', (description,due))
         self.db.commit()
         task_id = cursor.lastrowid
         for tag in tags:
@@ -50,6 +63,7 @@ class Database():
         cursor = self.db.cursor()
         cursor.execute('''
             SELECT * FROM Tasks
+            ORDER BY DueTimeStamp IS NULL, DueTimeStamp ASC
         ''')
         tasks = []
         for row in cursor:
@@ -61,6 +75,7 @@ class Database():
         cursor = self.db.cursor()
         cursor.execute('''
             SELECT * FROM Tasks, Tags WHERE Tasks.TaskID = Tags.TaskID AND Tags.TagName = ?
+            ORDER BY DueTimeStamp IS NULL, DueTimeStamp ASC
         ''', (tag,))
         tasks = []
         for row in cursor:

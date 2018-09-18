@@ -118,6 +118,15 @@ h1 {
 	font-weight:300;
 }
 
+.center_message {
+	width:100%;
+	text-align:center;
+	color:#aeaeae;
+	font-weight:200;
+	font-size:24px;
+	padding-top:50px;
+}
+
 @media only screen and (max-width: 600px) {
     header, section {
         width:90%;
@@ -172,4 +181,8 @@ h1 {
 
 .blue {
   border-bottom:2px solid #3498db;
+}
+
+.late {
+	color:#F800A7;
 }

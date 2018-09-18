@@ -5,11 +5,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "Hello, World!"
+    return send_from_directory('stat', 'index.html')
 
-@app.route('/stat/<path:path>')
-def stat(path):
-    return send_from_directory('stat', path)
 
 @app.route('/newTask', methods = ['POST'])
 def new_task():
@@ -38,5 +35,9 @@ def get_tasks_tag(tag):
     database = Database('todo.db')
     return jsonify(database.get_tasks_tag(tag))
 
+@app.route('/<path:path>')
+def stat(path):
+    return send_from_directory('stat', path)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
