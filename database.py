@@ -3,6 +3,8 @@ import datetime
 from dateutil import parser
 import re
 from icalendar import Calendar, Event
+import uuid
+import pytz
 
 class Database():
     def __init__(self, file_path):
@@ -131,6 +133,7 @@ class Database():
         calendar.add('version', '2.0')
         calendar.add('prodid', '-//bobby@dilley.io//https://github.com/bobbydilley/todolist//EN')
         calendar.add('TZID', 'Europe/London')
+        local = pytz.timezone("Europe/London")
         cursor = self.db.cursor()
         cursor.execute('''
             SELECT * FROM Tasks
@@ -144,7 +147,11 @@ class Database():
                     event_time = datetime.time(int(row[4][:2]), int(row[4][3:5]))
                 event = Event()
                 event.add('summary', row[1])
-                event.add('dtstart', datetime.datetime.combine(parser.parse(row[3]), event_time))
-                event.add('dtend', datetime.datetime.combine(parser.parse(row[3]), event_time) + + datetime.timedelta(hours=1))
+                local_dt = local.localize(datetime.datetime.combine(parser.parse(row[3]), event_time), is_dst=None)
+                next_dt = local.localize(datetime.datetime.combine(parser.parse(row[3]), event_time) + datetime.timedelta(hours=1), is_dst=None)
+                event.add('dtstart', local_dt.astimezone(pytz.utc))
+                event.add('dtend', next_dt.astimezone(pytz.utc))
+                event['uid'] = str(uuid.uuid4().hex) + "-todolist"
+
                 calendar.add_component(event)
         return calendar.to_ical()
