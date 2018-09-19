@@ -96,7 +96,7 @@ function populateList() {
 
 
     if(late_label == 0 && tasks[id].time_due != null && new Date(tasks[id].time_due) < today && new Date(tasks[id].time_due).toDateString() != today.toDateString()) {
-	innerList += `<h2 class="late">Late</h2>\n`;
+	innerList += `<h2 class="late">Yeasterday</h2>\n`;
 	late_label = 1;
     }
     else if(today_label == 0 && new Date(tasks[id].time_due).toDateString() == today.toDateString()) {
@@ -116,11 +116,11 @@ function populateList() {
     innerList += `<div class="desc">${tasks[id].description}</div>`;
     innerList += `<div class="actions">`;
     if(tasks[id].time_due != null) {
-	    if(new Date(tasks[id].time_due) > tomorrow) {
-		innerList += `<a class="snooze" onclick="snoozeTask(${tasks[id].id})">${new Date(tasks[id].time_due).getDate()} ${months[new Date(tasks[id].time_due).getMonth()]}</a>`;
-	    } else {
-	       innerList += `<a  class="snooze" onclick="snoozeTask(${tasks[id].id})">SNOOZE</a>`;
-            }
+      if(new Date(tasks[id].time_due) > tomorrow) {
+        innerList += `<a class="snooze" onclick="snoozeTask(${tasks[id].id})">${new Date(tasks[id].time_due).getDate()} ${months[new Date(tasks[id].time_due).getMonth()]}</a>`;
+      } else {
+        innerList += `<a  class="snooze" onclick="snoozeTask(${tasks[id].id})">${new Date(tasks[id].time_due).getHoursTwoDigits()}:${new Date(tasks[id].time_due).getMinutesTwoDigits()}</a>`;
+      }
 	    innerList += `<a class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
     } else {
         innerList += `<a class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
@@ -207,4 +207,22 @@ function copy() {
   .replace(/@\w+/gi, function (x) {
     return "<span class=\"blue\">" + x + "</span>";
   });
+}
+
+Date.prototype.getHoursTwoDigits = function() {
+    var retval = this.getHours();
+    if (retval < 10) {
+        return ("0" + retval.toString());
+    } else {
+        return retval.toString();
+    }
+}
+
+Date.prototype.getMinutesTwoDigits = function() {
+    var retval = this.getMinutes();
+    if (retval < 10) {
+        return ("0" + retval.toString());
+    } else {
+        return retval.toString();
+    }
 }

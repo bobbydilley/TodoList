@@ -1,5 +1,8 @@
 import sqlite3
 import datetime
+from dateutil import parser
+import re
+from icalendar import Calendar, Event
 
 class Database():
     def __init__(self, file_path):
@@ -22,16 +25,42 @@ class Database():
         tags = {d.strip("#") for d in description.split() if d.startswith("#")}
         times = {d.strip("@") for d in description.split() if d.startswith("@")}
         due = None
+        time_due = datetime.time(12, 00)
         for time in times:
             if time == "today" : due = datetime.date.today()
             if time == "tomorrow" : due = datetime.date.today() + datetime.timedelta(days=1)
-            if time == "monday" : due = self.next_weekday(datetime.date.today(), 0) 
-            if time == "tuesday" : due = self.next_weekday(datetime.date.today(), 1) 
-            if time == "wednesday" : due = self.next_weekday(datetime.date.today(), 2) 
-            if time == "thursday" : due = self.next_weekday(datetime.date.today(), 3) 
-            if time == "friday" : due = self.next_weekday(datetime.date.today(), 4) 
-            if time == "saturday" : due = self.next_weekday(datetime.date.today(), 5) 
-            if time == "sunday" : due = self.next_weekday(datetime.date.today(), 6) 
+            if time == "monday" : due = self.next_weekday(datetime.date.today(), 0)
+            if time == "tuesday" : due = self.next_weekday(datetime.date.today(), 1)
+            if time == "wednesday" : due = self.next_weekday(datetime.date.today(), 2)
+            if time == "thursday" : due = self.next_weekday(datetime.date.today(), 3)
+            if time == "friday" : due = self.next_weekday(datetime.date.today(), 4)
+            if time == "saturday" : due = self.next_weekday(datetime.date.today(), 5)
+            if time == "sunday" : due = self.next_weekday(datetime.date.today(), 6)
+
+            match = re.match('[0-9][0-9][0-9][0-9]', time, re.M|re.I)
+            if match:
+                a = match.group()
+                if due is None:
+                    due = datetime.date.today()
+                time_due = datetime.time(int(a[:2]), int(a[2:4]))
+
+            if time == "morning":
+                if due is None : due = datetime.date.today()
+                time_due = datetime.time(9, 00)
+
+            if time == "afternoon":
+                if due is None : due = datetime.date.today()
+                time_due = datetime.time(12, 00)
+
+            if time == "evening":
+                if due is None : due = datetime.date.today()
+                time_due = datetime.time(18, 00)
+
+            if due is not None:
+                due = datetime.datetime.combine(due, time_due)
+
+        print due
+
         for time in times:
             description = description.replace('@' + time, '')
         for tag in tags:
@@ -66,7 +95,7 @@ class Database():
             UPDATE Tasks SET DueTimeStamp = date(DueTimeStamp, "+1 Day") WHERE TaskID = ?
         ''', (task_id,))
         self.db.commit()
-    
+
     def get_tags(self):
         cursor = self.db.cursor()
         cursor.execute('''
@@ -99,3 +128,22 @@ class Database():
         for row in cursor:
             tasks.append({'id' : row[0], 'description' : row[1], 'time_created' : row[2], 'time_due' : row[3], 'completed' : row[4]})
         return tasks
+
+    def generate_ical(self):
+        calendar = Calendar()
+        calendar.add('version', '2.0')
+        calendar.add('prodid', '-//bobby@dilley.io//https://github.com/bobbydilley/todolist//EN')
+        cursor = self.db.cursor()
+        cursor.execute('''
+            SELECT * FROM Tasks
+            ORDER BY DueTimeStamp IS NULL, DueTimeStamp ASC
+        ''')
+        tasks = []
+        for row in cursor:
+            if row[3]:
+                event = Event()
+                event.add('summary', row[1])
+                event.add('dtstart', parser.parse(row[3]))
+                event.add('dtend', parser.parse(row[3]) + + datetime.timedelta(hours=1))
+                calendar.add_component(event)
+        return calendar.to_ical()
