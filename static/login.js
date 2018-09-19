@@ -20,6 +20,13 @@ function login() {
   xhttp.send("username=" + username + "&password=" + password);
 }
 
+window.onload = function() {
+  userkey = getCookie('todokey');
+  if(userkey != "") {
+    window.location.href = "../dashboard";
+  }
+}
+
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));

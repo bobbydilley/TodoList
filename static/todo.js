@@ -212,10 +212,16 @@ input.addEventListener("keyup", function(event) {
 var userkey = "";
 window.onload = function() {
   userkey = getCookie('todokey');
-  alert(userkey);
+  if(userkey == "") {
+    window.location.href = "../";
+  }
   setHeadText();
 	loadTasks();
 	loadTags();
+}
+
+function getUserKey() {
+  return userkey;
 }
 
 function copy() {

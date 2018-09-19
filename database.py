@@ -6,6 +6,7 @@ from icalendar import Calendar, Event
 import uuid
 import pytz
 from flask import jsonify
+from passlib.hash import pbkdf2_sha256
 
 class Database():
     def __init__(self, file_path):
@@ -24,6 +25,14 @@ class Database():
             days_ahead += 7
         return d + datetime.timedelta(days_ahead)
 
+    def new_user(self, username, password):
+        hash = pbkdf2_sha256.hash(password)
+        cursor = self.db.cursor()
+        cursor.execute('''
+            INSERT INTO Users VALUES (?, ?)
+        ''', (username, hash))
+        self.db.commit()
+
     def login(self, username, password):
         login = False
         cursor = self.db.cursor()
@@ -33,11 +42,12 @@ class Database():
 
         for row in cursor:
             if row[0]:
-                login = True
+                login = pbkdf2_sha256.verify(password, row[0])
+
         if login:
             return jsonify({"key" : self.create_session(username)})
         else:
-            return jsonify({"status" : "Failure"})
+            return jsonify({"status" : "Sorry, the username or password was incorrect"})
 
     def create_session(self, username):
         cursor = self.db.cursor()

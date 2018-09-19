@@ -5,8 +5,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    return send_from_directory('static', 'login.html')
+
+@app.route('/auth')
+def auth():
+    return send_from_directory('static', 'login.html')
+
+@app.route('/dashboard')
+def dashboard():
     return send_from_directory('static', 'index.html')
 
+@app.route('/logout')
+def logout():
+    return send_from_directory('static', 'logout.html')
 
 @app.route('/newTask', methods = ['POST'])
 def new_task():
@@ -28,7 +39,8 @@ def login():
 @app.route('/newuser', methods = ['POST'])
 def new_user():
     database = Database('todo.db')
-    return database.new_user(request.form['username'], request.form['password'])
+    database.new_user(request.form['username'], request.form['password'])
+    return jsonify({"status" : "successfull"})
 
 @app.route('/<api_key>.ics')
 def generate_ical(api_key):
