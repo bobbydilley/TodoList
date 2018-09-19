@@ -308,5 +308,5 @@ function textWidth(text) {
 }
 
 function icalLink() {
-  window.location.href = "http://localhost:5000/" + getUserKey() + ".ics";
+  window.location.href = "/" + getUserKey() + ".ics";
 }
