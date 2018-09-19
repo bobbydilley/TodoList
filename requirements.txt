@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-Flask==0.10.1
 icalendar
 python-dateutil
-=======
 Flask==0.12.3
->>>>>>> cfa7d0dd5a741b92011de2b8fb8e0fc3eefe63b6
+passlib

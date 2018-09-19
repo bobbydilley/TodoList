@@ -11,49 +11,49 @@ def index():
 @app.route('/newTask', methods = ['POST'])
 def new_task():
     database = Database('todo.db')
-    database.new_task(request.form['description'])
+    database.new_task(request.form['description'], request.headers.get('X-API-Key'))
     return jsonify({'status' : 'created'})
 
 @app.route('/removeTask/<task_id>')
 def remove_task(task_id):
     database = Database('todo.db')
-    database.remove_task(task_id)
+    database.remove_task(task_id, request.headers.get('X-API-Key'))
     return jsonify({'status' : 'removed'})
 
-@app.route('/login')
+@app.route('/login', methods = ['POST'])
 def login():
     database = Database('todo.db')
     return database.login(request.form['username'], request.form['password'])
 
-@app.route('/newuser')
+@app.route('/newuser', methods = ['POST'])
 def new_user():
     database = Database('todo.db')
     return database.new_user(request.form['username'], request.form['password'])
 
-@app.route('/ical.ics')
-def generate_ical():
+@app.route('/<api_key>.ics')
+def generate_ical(api_key):
     database = Database('todo.db')
-    return database.generate_ical()
+    return database.generate_ical(api_key)
 
 @app.route('/tags')
 def get_tags():
     database = Database('todo.db')
-    return jsonify(database.get_tags())
+    return jsonify(database.get_tags(request.headers.get('X-API-Key')))
 
 @app.route('/tasks')
 def get_tasks():
     database = Database('todo.db')
-    return jsonify(database.get_tasks())
+    return jsonify(database.get_tasks(request.headers.get('X-API-Key')))
 
 @app.route('/tasks/<tag>')
 def get_tasks_tag(tag):
     database = Database('todo.db')
-    return jsonify(database.get_tasks_tag(tag))
+    return jsonify(database.get_tasks_tag(tag, request.headers.get('X-API-Key')))
 
 @app.route('/snoozeTask/<task_id>')
 def snooze_task(task_id):
     database = Database('todo.db')
-    database.snooze_task(task_id)
+    database.snooze_task(task_id, request.headers.get('X-API-Key'))
     return jsonify({'status' : 'snoozed'})
 
 @app.route('/<path:path>')

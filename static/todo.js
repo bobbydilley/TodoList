@@ -20,6 +20,7 @@ function removeTask(task_id) {
     }
   };
   xhttp.open("GET", "../removeTask/" + task_id, true);
+  xhttp.setRequestHeader("X-API-Key", userkey);
   xhttp.send();
 }
 
@@ -32,6 +33,7 @@ function snoozeTask(task_id) {
     }
   };
   xhttp.open("GET", "../snoozeTask/" + task_id, true);
+  xhttp.setRequestHeader("X-API-Key", userkey);
   xhttp.send();
 }
 
@@ -49,6 +51,7 @@ function addTask() {
   };
   xhttp.open("POST", "../newTask", true);
   xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhttp.setRequestHeader("X-API-Key", userkey);
   xhttp.send("description=" + description);
   document.getElementById('newtasktext').value = "";
 }
@@ -66,6 +69,7 @@ function loadTasks() {
   } else {
 	xhttp.open("GET", "../tasks/" + current_tag, true);
   }
+  xhttp.setRequestHeader("X-API-Key", userkey);
   xhttp.send();
 }
 
@@ -79,6 +83,7 @@ function loadTags() {
     }
   };
   xhttp.open("GET", "../tags", true);
+  xhttp.setRequestHeader("X-API-Key", userkey);
   xhttp.send();
 }
 
@@ -204,8 +209,11 @@ input.addEventListener("keyup", function(event) {
     }
 });
 
+var userkey = "";
 window.onload = function() {
-	setHeadText();
+  userkey = getCookie('todokey');
+  alert(userkey);
+  setHeadText();
 	loadTasks();
 	loadTags();
 }
@@ -236,4 +244,20 @@ Date.prototype.getMinutesTwoDigits = function() {
     } else {
         return retval.toString();
     }
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }

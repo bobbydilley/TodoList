@@ -5,6 +5,7 @@ import re
 from icalendar import Calendar, Event
 import uuid
 import pytz
+from flask import jsonify
 
 class Database():
     def __init__(self, file_path):
@@ -34,19 +35,32 @@ class Database():
             if row[0]:
                 login = True
         if login:
-            return create_session(username)
+            return jsonify({"key" : self.create_session(username)})
         else:
-            return False
+            return jsonify({"status" : "Failure"})
 
     def create_session(self, username):
         cursor = self.db.cursor()
+        session_id = str(uuid.uuid4().hex)
         cursor.execute('''
             INSERT INTO Sessions VALUES (?, ?)
-        ''', (username, session_id))
+        ''', (session_id, username))
         self.db.commit()
-        return cursor.lastrowid
+        return session_id
 
-    def new_task(self, description):
+    def get_user(self, session_id):
+        cursor = self.db.cursor()
+        cursor.execute('''
+            SELECT Username FROM Sessions WHERE SessionID = ?
+        ''', (session_id,))
+        username = None
+        for row in cursor:
+            if row[0]:
+                username = row[0]
+        return username
+
+    def new_task(self, description, api_key):
+        username = self.get_user(api_key)
         tags = {d.strip("#") for d in description.split() if d.startswith("#")}
         times = {d.strip("@") for d in description.split() if d.startswith("@")}
         due_time = None
@@ -90,8 +104,8 @@ class Database():
         description = description.capitalize()
         cursor = self.db.cursor()
         cursor.execute('''
-            INSERT INTO Tasks (Description, DueTime, DueDate) VALUES (?, ?, ?)
-        ''', (description, due_time, due_date))
+            INSERT INTO Tasks (Description, DueTime, DueDate, Username) VALUES (?, ?, ?, ?)
+        ''', (description, due_time, due_date, username))
         self.db.commit()
         task_id = cursor.lastrowid
         for tag in tags:
@@ -104,54 +118,67 @@ class Database():
         ''', (tag_name, task_id))
         self.db.commit()
 
-    def remove_task(self, task_id):
+    def remove_task(self, task_id, api_key):
+        username = self.get_user(api_key)
         cursor = self.db.cursor()
         cursor.execute('''
-            DELETE FROM Tasks WHERE TaskID = ?
-        ''', (task_id,))
+            DELETE FROM Tasks WHERE Username = ? AND TaskID = ?
+        ''', (username,task_id))
         self.db.commit()
 
-    def snooze_task(self, task_id):
+    def snooze_task(self, task_id, api_key):
+        username = self.get_user(api_key)
         cursor = self.db.cursor()
         cursor.execute('''
-            UPDATE Tasks SET DueDate = date(DueDate, "+1 Day") WHERE TaskID = ?
-        ''', (task_id,))
+            UPDATE Tasks SET DueDate = date(DueDate, "+1 Day") WHERE Username = ? AND TaskID = ?
+        ''', (username,task_id))
         self.db.commit()
 
-    def get_tags(self):
+    def get_tags(self, api_key):
+        username = self.get_user(api_key)
         cursor = self.db.cursor()
         cursor.execute('''
-            SELECT TagName FROM Tags GROUP BY TagName
-        ''')
+            SELECT TagName FROM Tags, Tasks
+            WHERE Tasks.Username = ?
+            AND Tasks.TaskID = Tags.TaskID
+            GROUP BY TagName
+        ''', (username,))
         tags = []
         for row in cursor:
             tags.append(row[0])
         return tags
 
-    def get_tasks(self):
+    def get_tasks(self, api_key):
+        username = self.get_user(api_key)
         cursor = self.db.cursor()
         cursor.execute('''
             SELECT * FROM Tasks
+            WHERE Username = ?
             ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
-        ''')
+        ''', (username,))
         tasks = []
         for row in cursor:
             tasks.append({'id' : row[0], 'description' : row[1], 'time_created' : row[2], 'date_due' : row[3], 'time_due' : row[4], 'completed' : row[5]})
         return tasks
 
 
-    def get_tasks_tag(self, tag):
+    def get_tasks_tag(self, tag, api_key):
+        username = self.get_user(api_key)
         cursor = self.db.cursor()
         cursor.execute('''
-            SELECT * FROM Tasks, Tags WHERE Tasks.TaskID = Tags.TaskID AND Tags.TagName = ?
+            SELECT * FROM Tasks, Tags
+            WHERE Tasks.TaskID = Tags.TaskID
+            AND Tasks.Username = ?
+            AND Tags.TagName = ?
             ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
-        ''', (tag,))
+        ''', (username, tag))
         tasks = []
         for row in cursor:
             tasks.append({'id' : row[0], 'description' : row[1], 'time_created' : row[2], 'date_due' : row[3], 'time_due' : row[4], 'completed' : row[5]})
         return tasks
 
-    def generate_ical(self):
+    def generate_ical(self, api_key):
+        username = self.get_user(api_key)
         calendar = Calendar()
         calendar.add('version', '2.0')
         calendar.add('prodid', '-//bobby@dilley.io//https://github.com/bobbydilley/todolist//EN')
@@ -160,8 +187,9 @@ class Database():
         cursor = self.db.cursor()
         cursor.execute('''
             SELECT * FROM Tasks
+            WHERE Username = ?
             ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
-        ''')
+        ''', (username,))
         tasks = []
         for row in cursor:
             if row[3]:
