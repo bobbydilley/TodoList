@@ -23,6 +23,29 @@ class Database():
             days_ahead += 7
         return d + datetime.timedelta(days_ahead)
 
+    def login(self, username, password):
+        login = False
+        cursor = self.db.cursor()
+        cursor.execute('''
+            SELECT Password FROM Users WHERE Username = ?
+        ''', (username,))
+
+        for row in cursor:
+            if row[0]:
+                login = True
+        if login:
+            return create_session(username)
+        else:
+            return False
+
+    def create_session(self, username):
+        cursor = self.db.cursor()
+        cursor.execute('''
+            INSERT INTO Sessions VALUES (?, ?)
+        ''', (username, session_id))
+        self.db.commit()
+        return cursor.lastrowid
+
     def new_task(self, description):
         tags = {d.strip("#") for d in description.split() if d.startswith("#")}
         times = {d.strip("@") for d in description.split() if d.startswith("@")}

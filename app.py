@@ -20,6 +20,16 @@ def remove_task(task_id):
     database.remove_task(task_id)
     return jsonify({'status' : 'removed'})
 
+@app.route('/login')
+def login():
+    database = Database('todo.db')
+    return database.login(request.form['username'], request.form['password'])
+
+@app.route('/newuser')
+def new_user():
+    database = Database('todo.db')
+    return database.new_user(request.form['username'], request.form['password'])
+
 @app.route('/ical.ics')
 def generate_ical():
     database = Database('todo.db')
