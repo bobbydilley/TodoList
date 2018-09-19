@@ -20,7 +20,7 @@ def remove_task(task_id):
     database.remove_task(task_id)
     return jsonify({'status' : 'removed'})
 
-@app.route('/ical')
+@app.route('/ical.ics')
 def generate_ical():
     database = Database('todo.db')
     return database.generate_ical()

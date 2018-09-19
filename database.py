@@ -24,42 +24,39 @@ class Database():
     def new_task(self, description):
         tags = {d.strip("#") for d in description.split() if d.startswith("#")}
         times = {d.strip("@") for d in description.split() if d.startswith("@")}
-        due = None
-        time_due = datetime.time(12, 00)
+        due_time = None
+        due_date = None
         for time in times:
-            if time == "today" : due = datetime.date.today()
-            if time == "tomorrow" : due = datetime.date.today() + datetime.timedelta(days=1)
-            if time == "monday" : due = self.next_weekday(datetime.date.today(), 0)
-            if time == "tuesday" : due = self.next_weekday(datetime.date.today(), 1)
-            if time == "wednesday" : due = self.next_weekday(datetime.date.today(), 2)
-            if time == "thursday" : due = self.next_weekday(datetime.date.today(), 3)
-            if time == "friday" : due = self.next_weekday(datetime.date.today(), 4)
-            if time == "saturday" : due = self.next_weekday(datetime.date.today(), 5)
-            if time == "sunday" : due = self.next_weekday(datetime.date.today(), 6)
+            if time == "today" : due_date = datetime.date.today()
+            if time == "tomorrow" : due_date = datetime.date.today() + datetime.timedelta(days=1)
+            if time == "monday" : due_date = self.next_weekday(datetime.date.today(), 0)
+            if time == "tuesday" : due_date = self.next_weekday(datetime.date.today(), 1)
+            if time == "wednesday" : due_date = self.next_weekday(datetime.date.today(), 2)
+            if time == "thursday" : due_date = self.next_weekday(datetime.date.today(), 3)
+            if time == "friday" : due_date = self.next_weekday(datetime.date.today(), 4)
+            if time == "saturday" : due_date = self.next_weekday(datetime.date.today(), 5)
+            if time == "sunday" : due_date = self.next_weekday(datetime.date.today(), 6)
 
             match = re.match('[0-9][0-9][0-9][0-9]', time, re.M|re.I)
             if match:
                 a = match.group()
-                if due is None:
-                    due = datetime.date.today()
-                time_due = datetime.time(int(a[:2]), int(a[2:4]))
+                if due_date is None : due_date = datetime.date.today()
+                due_time = datetime.time(int(a[:2]), int(a[2:4]))
 
             if time == "morning":
-                if due is None : due = datetime.date.today()
-                time_due = datetime.time(9, 00)
+                if due_date is None : due_date = datetime.date.today()
+                due_time = datetime.time(9, 00)
 
             if time == "afternoon":
-                if due is None : due = datetime.date.today()
-                time_due = datetime.time(12, 00)
+                if due_date is None : due_date = datetime.date.today()
+                due_time = datetime.time(12, 00)
 
             if time == "evening":
-                if due is None : due = datetime.date.today()
-                time_due = datetime.time(18, 00)
+                if due_date is None : due_date = datetime.date.today()
+                due_time = datetime.time(18, 00)
 
-            if due is not None:
-                due = datetime.datetime.combine(due, time_due)
-
-        print due
+        if due_time is not None:
+            due_time = due_time.strftime("%H:%M:%S")
 
         for time in times:
             description = description.replace('@' + time, '')
@@ -68,8 +65,8 @@ class Database():
         description = description.capitalize()
         cursor = self.db.cursor()
         cursor.execute('''
-            INSERT INTO Tasks (Description, DueTimeStamp) VALUES (?, ?)
-        ''', (description,due))
+            INSERT INTO Tasks (Description, DueTime, DueDate) VALUES (?, ?, ?)
+        ''', (description, due_time, due_date))
         self.db.commit()
         task_id = cursor.lastrowid
         for tag in tags:
@@ -92,7 +89,7 @@ class Database():
     def snooze_task(self, task_id):
         cursor = self.db.cursor()
         cursor.execute('''
-            UPDATE Tasks SET DueTimeStamp = date(DueTimeStamp, "+1 Day") WHERE TaskID = ?
+            UPDATE Tasks SET DueDate = date(DueDate, "+1 Day") WHERE TaskID = ?
         ''', (task_id,))
         self.db.commit()
 
@@ -110,11 +107,11 @@ class Database():
         cursor = self.db.cursor()
         cursor.execute('''
             SELECT * FROM Tasks
-            ORDER BY DueTimeStamp IS NULL, DueTimeStamp ASC
+            ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
         ''')
         tasks = []
         for row in cursor:
-            tasks.append({'id' : row[0], 'description' : row[1], 'time_created' : row[2], 'time_due' : row[3], 'completed' : row[4]})
+            tasks.append({'id' : row[0], 'description' : row[1], 'time_created' : row[2], 'date_due' : row[3], 'time_due' : row[4], 'completed' : row[5]})
         return tasks
 
 
@@ -122,28 +119,32 @@ class Database():
         cursor = self.db.cursor()
         cursor.execute('''
             SELECT * FROM Tasks, Tags WHERE Tasks.TaskID = Tags.TaskID AND Tags.TagName = ?
-            ORDER BY DueTimeStamp IS NULL, DueTimeStamp ASC
+            ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
         ''', (tag,))
         tasks = []
         for row in cursor:
-            tasks.append({'id' : row[0], 'description' : row[1], 'time_created' : row[2], 'time_due' : row[3], 'completed' : row[4]})
+            tasks.append({'id' : row[0], 'description' : row[1], 'time_created' : row[2], 'date_due' : row[3], 'time_due' : row[4], 'completed' : row[5]})
         return tasks
 
     def generate_ical(self):
         calendar = Calendar()
         calendar.add('version', '2.0')
         calendar.add('prodid', '-//bobby@dilley.io//https://github.com/bobbydilley/todolist//EN')
+        calendar.add('TZID', 'Europe/London')
         cursor = self.db.cursor()
         cursor.execute('''
             SELECT * FROM Tasks
-            ORDER BY DueTimeStamp IS NULL, DueTimeStamp ASC
+            ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
         ''')
         tasks = []
         for row in cursor:
             if row[3]:
+                event_time = datetime.time(9, 00)
+                if row[4]:
+                    event_time = datetime.time(int(row[4][:2]), int(row[4][3:5]))
                 event = Event()
                 event.add('summary', row[1])
-                event.add('dtstart', parser.parse(row[3]))
-                event.add('dtend', parser.parse(row[3]) + + datetime.timedelta(hours=1))
+                event.add('dtstart', datetime.datetime.combine(parser.parse(row[3]), event_time))
+                event.add('dtend', datetime.datetime.combine(parser.parse(row[3]), event_time) + + datetime.timedelta(hours=1))
                 calendar.add_component(event)
         return calendar.to_ical()
