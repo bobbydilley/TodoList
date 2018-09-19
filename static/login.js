@@ -8,6 +8,7 @@ function login() {
       key = JSON.parse(this.responseText);
       if(key.status != null) {
         alert(key.status);
+        document.getElementById('password').focus();
       } else {
         setCookie('todokey', key.key, 100);
         window.location.href = "../";
@@ -25,6 +26,7 @@ window.onload = function() {
   if(userkey != "") {
     window.location.href = "../dashboard";
   }
+  document.getElementById('username').focus();
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -49,3 +51,19 @@ function getCookie(cname) {
     }
     return "";
 }
+
+var input = document.getElementById("password");
+input.addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+       login();
+    }
+});
+
+var input = document.getElementById("username");
+input.addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+       document.getElementById('password').focus();
+    }
+});

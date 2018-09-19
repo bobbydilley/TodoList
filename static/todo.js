@@ -218,6 +218,7 @@ window.onload = function() {
   setHeadText();
 	loadTasks();
 	loadTags();
+  document.getElementById('newtasktext').focus();
 }
 
 function getUserKey() {
@@ -304,4 +305,8 @@ function textWidth(text) {
     var result = tag.clientWidth;
     document.body.removeChild(tag);
     return result + 5;
+}
+
+function icalLink() {
+  window.location.href = "http://localhost:5000/" + getUserKey() + ".ics";
 }
