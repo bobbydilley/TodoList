@@ -36,12 +36,6 @@ def login():
     database = Database('todo.db')
     return database.login(request.form['username'], request.form['password'])
 
-@app.route('/newuser', methods = ['POST'])
-def new_user():
-    database = Database('todo.db')
-    database.new_user(request.form['username'], request.form['password'])
-    return jsonify({"status" : "successfull"})
-
 @app.route('/<api_key>.ics')
 def generate_ical(api_key):
     database = Database('todo.db')
