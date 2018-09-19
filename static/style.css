@@ -141,18 +141,11 @@ h1 {
 	padding-top:50px;
 }
 
-@media only screen and (max-width: 600px) {
-    header, section {
-        width:90%;
-        padding-left:5%;
-        padding-right:5%;
-    }
-}
-
 .desc {
-  max-width:80%;
+  max-width:60%;
   text-align:left;
   display:inline-block;
+
 }
 
 .actions {
@@ -207,6 +200,8 @@ h1 {
   position:relative;
   display:block;
   height:35px;
+  overflow:none;
+  width:100%;
 }
 
 #newtasktext {
@@ -228,4 +223,27 @@ h1 {
 
 .late {
 	color:#F800A7;
+}
+
+
+@media only screen and (max-width: 850px) {
+    header, section {
+        width:90%;
+        padding-left:5%;
+        padding-right:5%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+  .desc {
+    display:block;
+    float:none;
+  }
+
+  .actions {
+    display:block;
+    float:none;
+    margin-top:20px;
+  }
+
 }

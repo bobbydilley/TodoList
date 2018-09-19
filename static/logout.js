@@ -1,5 +1,6 @@
 window.onload = function() {
   userkey = setCookie('todokey', '', 0);
+  userkey = setCookie('cache', '', 0);
   window.location.href = "../";
 }
 
