@@ -21,6 +21,16 @@ python app.py
 
 You can then navigate to `localhost:5000` in your browser and start using the app.
 
+## Creating Users
+
+To create a user navigate to the project's root directly and run:
+
+```
+python create_user.py <username> <password>
+```
+
+where both `<username>` and `<password>` are replaced with your desired username and password.
+
 ## Usage
 
 Simply type a task into the textbox at the top and press enter.
