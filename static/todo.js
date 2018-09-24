@@ -310,3 +310,7 @@ function textWidth(text) {
 function icalLink() {
   window.location.href = "/" + getUserKey() + ".ics";
 }
+
+function showHide(name) {
+  document.getElementById(name).classList.toggle("show");
+}

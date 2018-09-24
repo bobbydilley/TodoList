@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name = "viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+  </head>
+  <body>
+    <header>
+      <div class="title">
+	      <h1 id="head_text"></h1>
+      </div>
+      <nav>
+        <ul id="tags">
+          <li><a href="index.html" class="active">ALL</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="todo">
+      <div class="container">
+        <input type="text" id="newtasktext" class="todo_input" onchange="copy()" onkeydown="copy()" onkeyup="copy()" placeholder="I need to..."/>
+        <p id="textunder"></p>
+      </div>
+    </section>
+
+    <section class="list" id="today">
+      <div class="item" >
+        <div class="desc" onclick="showHide('25options')">Last day of the week</div>
+        <div class="actions">
+          <a class="snooze" onclick="snoozeTask(27)">ALL DAY</a>
+          <a class="complete" onclick="removeTask(27)">COMPLETE</a>
+        </div>
+        <div class="options" id="25options">
+          <h2>Date</h2>
+          <a class="complete" onclick="snoozeTask(27)">+1 HOUR</a>
+          <a class="complete" onclick="snoozeTask(27)">+1 DAY</a>
+          <a class="complete" onclick="snoozeTask(27)">+1 WEEK</a>
+          <h2>Tags</h2>
+          <a class="complete" onclick="snoozeTask(27)">REMOVE #WORK</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="footer">Get your iCal link <a onclick="icalLink()">here</a></p>
+    </section>
+<script>
+function showHide(name) {
+  document.getElementById(name).classList.toggle("show");
+}
+
+</script>
+  </body>
+</html>
