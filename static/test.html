@@ -29,16 +29,13 @@
       <div class="item" >
         <div class="desc" onclick="showHide('25options')">Last day of the week</div>
         <div class="actions">
-          <a class="snooze" onclick="snoozeTask(27)">ALL DAY</a>
-          <a class="complete" onclick="removeTask(27)">COMPLETE</a>
-        </div>
-        <div class="options" id="25options">
-          <h2>Date</h2>
-          <a class="complete" onclick="snoozeTask(27)">+1 HOUR</a>
-          <a class="complete" onclick="snoozeTask(27)">+1 DAY</a>
-          <a class="complete" onclick="snoozeTask(27)">+1 WEEK</a>
-          <h2>Tags</h2>
-          <a class="complete" onclick="snoozeTask(27)">REMOVE #WORK</a>
+          <div class="options" id="25options">
+            <a class="complete" onclick="removeTask(27)">COMPLETE</a>
+            <a class="complete" onclick="removeTask(27)">TIME</a>
+            <a class="complete" onclick="removeTask(27)">TAGS</a>
+          </div>
+          <a class="snooze" onclick="showHide('25options')">TODAY</a>
+
         </div>
       </div>
     </section>
