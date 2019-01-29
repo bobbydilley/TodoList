@@ -111,7 +111,10 @@ class Database():
             description = description.replace('@' + time, '')
         for tag in tags:
             description = description.replace('#' + tag, '')
-        description = description.capitalize()
+        
+        URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://|https://)[^ <>'"{}|\\^`[\]]*)''')
+        description = URL_REGEX.sub(r'<a href="\1">\1</a>', description)
+
         cursor = self.db.cursor()
         cursor.execute('''
             INSERT INTO Tasks (Description, DueTime, DueDate, Username) VALUES (?, ?, ?, ?)

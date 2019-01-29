@@ -302,3 +302,16 @@ h1 {
   }
 
 }
+
+.item .desc a {
+	margin:inherit;
+	color:#3498db;
+	font-size:inherit;
+	font-weight:inherit;
+	padding:inherit;
+	color:
+}
+
+.item .desc a:hover {
+	text-decoration:underline;
+}
