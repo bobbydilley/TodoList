@@ -31,6 +31,12 @@ def remove_task(task_id):
     database.remove_task(task_id, request.headers.get('X-API-Key'))
     return jsonify({'status' : 'removed'})
 
+@app.route('/changeTaskComplete/<task_id>', methods = ['POST'])
+def change_task(task_id):
+    database = Database(databasefp)
+    database.change_task_complete(task_id, request.form['task_status'], request.headers.get('X-API-Key'))
+    return jsonify({'status' : 'changed'})
+
 @app.route('/login', methods = ['POST'])
 def login():
     database = Database(databasefp)

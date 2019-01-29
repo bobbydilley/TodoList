@@ -24,6 +24,23 @@ function removeTask(task_id) {
   xhttp.send();
 }
 
+function changeTaskComplete(task_id, task_status) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if(this.readyState == 4 && this.status == 200) {
+      loadTasks();
+      if(current_tag == 0) {
+        loadTags();
+      }
+    }
+  };
+  xhttp.open("POST", "../changeTaskComplete/" + task_id, true);
+  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhttp.setRequestHeader("X-API-Key", userkey);
+  xhttp.send("task_status=" + task_status);
+}
+
+
 
 function snoozeTask(task_id) {
   var xhttp = new XMLHttpRequest();
@@ -137,10 +154,15 @@ function populateList() {
         }
 
       }
-	    innerList += `<a class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
-    } else {
-        innerList += `<a class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a>`;
     }
+    var task_type = "READY";
+    var task_class = "ready";
+    if(tasks[id].completed == 1) {
+      task_type = "PROGRESS";
+      task_class = "progress";
+    }
+    //innerList += `<div class="complete_dropdown"><a class="complete" onclick="removeTask(${tasks[id].id})">COMPLETE</a><div class="complete_dropdown_content"><a class="ready" href="#">READY</a><a class="progress" href="#">PROGRESS</a><a href="#">COMPLETE</a></div></div>`;
+    innerList += `<div class="complete_dropdown"><a class="complete ${task_class}" onclick="toggleView('toggle${tasks[id].id}')">${task_type}</a><div id="toggle${tasks[id].id}" class="complete_dropdown_content"><a onclick="changeTaskComplete(${tasks[id].id}, 0);" class="ready" href="#">READY</a><a onclick="changeTaskComplete(${tasks[id].id}, 1);" class="progress" href="#">PROGRESS</a><a onclick="removeTask(${tasks[id].id})" href="#">COMPLETE</a></div></div>`;
     innerList += `</div></div>`;
   }
   if(innerList == "") {
@@ -181,6 +203,15 @@ function swapTag(name) {
 		current_tag = name;
 	}
 	loadTasks();
+}
+
+function toggleView(view_id) {
+  var x = document.getElementById(view_id);
+        if (x.style.display != "block") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
 }
 
 function setHeadText() {

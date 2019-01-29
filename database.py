@@ -111,7 +111,7 @@ class Database():
             description = description.replace('@' + time, '')
         for tag in tags:
             description = description.replace('#' + tag, '')
-        
+
         URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://|https://)[^ <>'"{}|\\^`[\]]*)''')
         description = URL_REGEX.sub(r'<a href="\1">\1</a>', description)
 
@@ -137,6 +137,14 @@ class Database():
         cursor.execute('''
             DELETE FROM Tasks WHERE Username = ? AND TaskID = ?
         ''', (username,task_id))
+        self.db.commit()
+
+    def change_task_complete(self, task_id, task_status, api_key):
+        username = self.get_user(api_key)
+        cursor = self.db.cursor()
+        cursor.execute('''
+            UPDATE Tasks SET TaskComplete = ? WHERE Username = ? AND TaskID = ?
+        ''', (task_status, username,task_id))
         self.db.commit()
 
     def snooze_task(self, task_id, api_key):
