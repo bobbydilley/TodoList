@@ -78,6 +78,7 @@ class Database():
         for time in times:
             if time == "today" : due_date = datetime.date.today()
             if time == "tomorrow" : due_date = datetime.date.today() + datetime.timedelta(days=1)
+            if time == "yeasterday" : due_date = datetime.date.today() - datetime.timedelta(days=1)
             if time == "monday" : due_date = self.next_weekday(datetime.date.today(), 0)
             if time == "tuesday" : due_date = self.next_weekday(datetime.date.today(), 1)
             if time == "wednesday" : due_date = self.next_weekday(datetime.date.today(), 2)

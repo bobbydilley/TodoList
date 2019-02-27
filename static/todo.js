@@ -263,6 +263,9 @@ function copy() {
   })
   .replace(/@\w+/gi, function (x) {
     return "<span class=\"blue\">" + x + "</span>";
+  })
+  .replace(/-\-\w+\=*\w*/gi, function (x) {
+    return "<span class=\"green\">" + x + "</span>";
   });
   rightAmount();
 }
