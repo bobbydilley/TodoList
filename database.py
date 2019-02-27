@@ -73,8 +73,13 @@ class Database():
         username = self.get_user(api_key)
         tags = {d.strip("#") for d in description.split() if d.startswith("#")}
         times = {d.strip("@") for d in description.split() if d.startswith("@")}
+        commands = {d.strip("--") for d in description.split() if d.startswith("--")}
         due_time = None
         due_date = None
+        
+        for command in commands:
+            description += command + ", "
+
         for time in times:
             if time == "today" : due_date = datetime.date.today()
             if time == "tomorrow" : due_date = datetime.date.today() + datetime.timedelta(days=1)
@@ -112,7 +117,9 @@ class Database():
             description = description.replace('@' + time, '')
         for tag in tags:
             description = description.replace('#' + tag, '')
-
+        for command in commands:
+            description = description.replace('--' + command, '') 
+       
         URL_REGEX = re.compile(r'''((?:mailto:|ftp://|http://|https://)[^ <>'"{}|\\^`[\]]*)''')
         description = URL_REGEX.sub(r'<a href="\1">\1</a>', description)
 
