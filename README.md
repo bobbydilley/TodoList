@@ -11,6 +11,15 @@ sudo apt install python python-pip python-flask sqlite
 sudo pip install flask
 ```
 
+You then need to generate the database and some users, from the directory of the project run:
+
+```
+cd utils
+./CreateTable.sh
+cd ..
+python create_user.py <username> <password>
+```
+
 ## Running
 
 Simply run this command to start the server in development mode:
