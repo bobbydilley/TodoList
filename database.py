@@ -177,14 +177,24 @@ class Database():
             tags.append(row[0])
         return tags
 
-    def get_tasks(self, api_key):
+    def get_tasks(self, api_key, only_show_current = False):
         username = self.get_user(api_key)
         cursor = self.db.cursor()
-        cursor.execute('''
+        built_query = '''
             SELECT * FROM Tasks
             WHERE Username = ?
+        '''
+        
+        if only_show_current:
+            built_query += '''
+            AND DueDate IS NOT NULL
+        '''
+
+        built_query += '''
             ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
-        ''', (username,))
+        '''
+
+        cursor.execute(built_query, (username,))
         tasks = []
         for row in cursor:
             tasks.append({'id' : row[0], 'description' : row[1], 'time_created' : row[2], 'date_due' : row[3], 'time_due' : row[4], 'completed' : row[5]})

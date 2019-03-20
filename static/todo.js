@@ -1,6 +1,6 @@
 var tags = {};
 var tasks = {};
-var current_tag = 0;
+var current_tag = -1;
 var last_tag = current_tag;
 var months = [
     "JANUARY", "FEBRUARY", "MARCH",
@@ -81,9 +81,13 @@ function loadTasks() {
       populateList();
     }
   };
-  if(current_tag == 0) {
+  if(current_tag == -1) {
+        xhttp.open("GET", "../inbox", true);
+  }
+  else if(current_tag == 0) {
   	xhttp.open("GET", "../tasks", true);
-  } else {
+  } 
+  else {
 	xhttp.open("GET", "../tasks/" + current_tag, true);
   }
   xhttp.setRequestHeader("X-API-Key", userkey);
@@ -176,7 +180,8 @@ function populateList() {
 }
 
 function populateTags() {
-	var innerList = `<li><a onclick="loadTag(0)" id="tag_0">ALL</a></li>`;
+	var innerList = `<li><a onclick="loadTag(-1)" id="tag_-1">INBOX</a></li>`;
+	innerList += `<li><a onclick="loadTag(0)" id="tag_0">ALL</a></li>`;
 	for(var id in tags) {
 		innerList += `<li><a id="tag_${tags[id]}" onclick="loadTag('${tags[id]}')">${tags[id].toUpperCase()}</a></li>`
 	}

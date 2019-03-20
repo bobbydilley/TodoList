@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from database import Database
 
 app = Flask(__name__)
-databasefp = '/home/bobbydilley/todo.db'
+databasefp = '/var/www/todolist/todolist/todo.db'
 @app.route('/')
 def index():
     return send_from_directory('static', 'login.html')
@@ -56,6 +56,11 @@ def get_tags():
 def get_tasks():
     database = Database(databasefp)
     return jsonify(database.get_tasks(request.headers.get('X-API-Key')))
+
+@app.route('/inbox')
+def get_inbox():
+    database = Database(databasefp)
+    return jsonify(database.get_tasks(request.headers.get('X-API-Key'), True))
 
 @app.route('/tasks/<tag>')
 def get_tasks_tag(tag):
