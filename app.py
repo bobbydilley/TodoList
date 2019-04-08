@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from database import Database
 
 app = Flask(__name__)
-databasefp = '/var/www/todolist/todolist/todo.db'
+databasefp = 'todo.db'
 @app.route('/')
 def index():
     return send_from_directory('static', 'login.html')
