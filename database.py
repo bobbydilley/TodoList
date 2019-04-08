@@ -170,6 +170,7 @@ class Database():
             SELECT TagName FROM Tags, Tasks
             WHERE Tasks.Username = ?
             AND Tasks.TaskID = Tags.TaskID
+            AND Tasks.TaskComplete != 3
             GROUP BY TagName
         ''', (username,))
         tags = []
