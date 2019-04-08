@@ -143,7 +143,7 @@ class Database():
         username = self.get_user(api_key)
         cursor = self.db.cursor()
         cursor.execute('''
-            DELETE FROM Tasks WHERE Username = ? AND TaskID = ?
+            UPDATE Tasks SET TaskComplete = 3 WHERE Username = ? AND TaskID = ?
         ''', (username,task_id))
         self.db.commit()
 
@@ -182,16 +182,23 @@ class Database():
         cursor = self.db.cursor()
         built_query = '''
             SELECT * FROM Tasks
+            LEFT JOIN Tags On Tags.TaskID = Tasks.TaskID
             WHERE Username = ?
+            AND TaskComplete != 3
         '''
         
         if only_show_current:
             built_query += '''
             AND DueDate IS NOT NULL
         '''
+        else:
+            built_query += '''
+            AND DueDate IS NULL
+            AND Tags.TaskID IS NULL
+        '''
 
         built_query += '''
-            ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
+            ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC, CreatedTimeStamp DESC
         '''
 
         cursor.execute(built_query, (username,))

@@ -5,6 +5,11 @@ body {
   margin-bottom:40px;
 }
 
+nav {
+	clear:both;
+	overflow:auto;
+}
+
 header {
   width:800px;
   padding-left:calc(50% - 400px);
@@ -37,6 +42,7 @@ header ul {
   margin:0;
   padding:0;
   padding-top:10px;
+  white-space:nowrap;
 }
 
 header ul a {
@@ -76,18 +82,32 @@ header ul a {
   width:100%;
 }
 
+.left {
+	width:48%;
+	float:left;
+	text-align:left;
+}
+
+.right {
+	width:48%;
+	float:right;
+	text-align:right;
+}
+
 .active {
   color:#FFF;
   border-bottom:2px solid #F800A7;
 }
 
 header li {
-  display:inline-block;
+  display:inline;
   margin-right:20px;
 }
 
 .title {
   padding-top:20px;
+  display:block;
+  clear:both;
 }
 
 ::placeholder {

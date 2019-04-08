@@ -56,7 +56,7 @@ function snoozeTask(task_id) {
 
 function addTask() {
   var description = document.getElementById('newtasktext').value;
-  if(current_tag > 0) {
+  if(current_tag != 0 && current_tag != -1) {
     description += " #" + current_tag;
   }
   var xhttp = new XMLHttpRequest();

@@ -11,7 +11,7 @@ function login() {
         document.getElementById('password').focus();
       } else {
         setCookie('todokey', key.key, 100);
-        window.location.href = "../";
+        location.reload();
       }
     }
   };
