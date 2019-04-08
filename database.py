@@ -214,9 +214,10 @@ class Database():
         cursor.execute('''
             SELECT * FROM Tasks, Tags
             WHERE Tasks.TaskID = Tags.TaskID
+            AND TaskComplete != 3
             AND Tasks.Username = ?
             AND Tags.TagName = ?
-            ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC
+            ORDER BY DueDate IS NULL, DueDate ASC, DueTime IS NULL, DueTime ASC, CreatedTimeStamp DESC
         ''', (username, tag))
         tasks = []
         for row in cursor:
