@@ -122,7 +122,7 @@ function populateList() {
 
 
     if(late_label == 0 && tasks[id].date_due != null && new Date(tasks[id].date_due) < today && new Date(tasks[id].date_due).toDateString() != today.toDateString()) {
-	innerList += `<h2 class="late">Yeasterday</h2>\n`;
+	innerList += `<h2 class="late">Past</h2>\n`;
 	late_label = 1;
     }
     else if(today_label == 0 && new Date(tasks[id].date_due).toDateString() == today.toDateString()) {
